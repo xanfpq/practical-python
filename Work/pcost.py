@@ -2,7 +2,6 @@
 #
 # Exercise 1.27
 import csv
-from fileinput import filename
 import sys
 
 def portfolio_cost(filename):
@@ -25,21 +24,21 @@ def portfolio_cost_csv(filename):
     with open(filename, 'rt') as f:
         rows = csv.reader(f)
         header = next(rows)
-        line = 0
-        for row in rows:
-            line += 1
+        for rownum, row in enumerate(rows, start=1):
+            record = dict(zip(header, row))
             try:
-                total_cost += int(row[1]) * float(row[2])
+                total_cost += int(record['shares']) * float(record['price'])
             except ValueError as e:
-                print(f'Row {line}: {e}')
+                print(f"Row {rownum}: Couldn't convert: {row}")
                 continue
     return total_cost
 
 if len(sys.argv) == 2:
     filename = sys.argv[1]
 else:
-    filename = './Work/Data/portfolio.csv'
+    #filename = './Work/Data/portfolio.csv'
+    #filename = './Work/Data/missing.csv'
+    filename = './Work/Data/portfoliodate.csv'
 
-#cost = portfolio_cost('./Work/Data/missing.csv')
 cost = portfolio_cost_csv(filename)
 print(f'Total cost {cost}')
