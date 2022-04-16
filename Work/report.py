@@ -2,16 +2,22 @@
 #
 # Exercise 2.4
 import sys
+from stock import Stock
 from fileparse import parse_csv
+import tableformat
+from portfolio import Portfolio
 
-def read_portfolio(filename):
+def read_portfolio(filename, **opts):
     '''
     Read a stock portfolio file into a list of dictionaries with keys
     name, shares, and price.
     '''
     with open(filename) as lines:
-        return parse_csv(lines, select=['name', 'shares', 'price'], types=[str, int, float])
-
+        portfolio = Portfolio.from_csv(
+            lines,
+            **opts
+        )
+        return portfolio
 
 def read_prices(filename):
     '''
@@ -27,35 +33,41 @@ def make_report(portfolio, prices):
     '''
     report = []
     for r in portfolio:
-        report.append((r['name'], r['shares'], prices[r['name']], prices[r['name']] - r['price']))
+        report.append((r.name, r.shares, prices[r.name], prices[r.name] - r.price))
     return report
 
-def print_report(report):
+def print_report(report, formatter):
     '''
     Print a nicely formated table from a list of (name, shares, price, change) tuples.
     '''
-    headers = ('Name', 'Shares', 'Price', 'Change')
-    report = [headers, ('-' * 10,) * len(headers)] + report
-    for line, row in enumerate(report):
-        name, shares, price, change = row
-        if line < 2:
-            print(f'{name:>10s} {shares:>10s} {price:>10s} {change:>10s}')
-        else:
-            print(f'{name:>10s} {shares:>10d} ${price:>9.2f} {change:>10.2f}')
+    if isinstance(formatter, tableformat.HTMLTableFormatter): formatter.open() 
+    formatter.headings(['Name', 'Shares', 'Price', 'Change'])
+    for name, shares, price, change in report:
+        formatter.row([ name, str(shares), f'{price:0.2f}', f'{change:0.2f}' ])
+    if isinstance(formatter, tableformat.HTMLTableFormatter): formatter.close()
 
-def portfolio_report(portfolio_filename, prices_filename):
+def portfolio_report(portfolio_filename, prices_filename, format='txt'):
     '''
     Make a stock report given portfolio and price data files.
     '''
+    # Read data files
     portfolio = read_portfolio(portfolio_filename)
     prices = read_prices(prices_filename)
+
+    # Create the report data
     report = make_report(portfolio, prices)
-    print_report(report)
+
+    # Print it out
+    formatter = tableformat.create_formatter(format)
+    print_report(report, formatter)
 
 def main(argv):
-    if len(argv) != 3:
+    if len(argv) == 3:
+        portfolio_report(argv[1], argv[2])
+    elif len(argv) == 4:
+        portfolio_report(argv[1], argv[2], argv[3])
+    else:
         raise SystemExit(f'Usage: {argv[0]} portfolio_file prices_file')
-    portfolio_report(argv[1], argv[2])
 
 if __name__ == '__main__':
     main(sys.argv)
