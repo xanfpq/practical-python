@@ -1,10 +1,11 @@
 # stock.py
-#
-# Exercise 4.1
+
 from typedproperty import String, Integer, Float
 
 class Stock:
-
+    '''
+    An instance of a stock holding consisting of name, shares, and price.
+    '''
     name = String('name')
     shares = Integer('shares')
     price = Float('price')
@@ -43,7 +44,13 @@ class Stock:
 
     @property
     def cost(self):
+        '''
+        Return the cost as shares*price
+        '''
         return self.shares * self.price
     
     def sell(self, sells):
+        '''
+        Sell a number of shares and return the remaining number.
+        '''
         self.shares -= sells

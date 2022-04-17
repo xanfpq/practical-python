@@ -6,6 +6,15 @@ from stock import Stock
 from fileparse import parse_csv
 import tableformat
 from portfolio import Portfolio
+import logging
+import os
+
+logging.basicConfig(
+    filename = 'app.log',      # Name of the log file (omit to use stderr)
+    filemode = 'a',            # File mode (use 'a' to append)
+    level    = logging.DEBUG,  # Logging level (DEBUG, INFO, WARNING, ERROR, or CRITICAL)
+    format   = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+)
 
 def read_portfolio(filename, **opts):
     '''
@@ -70,4 +79,6 @@ def main(argv):
         raise SystemExit(f'Usage: {argv[0]} portfolio_file prices_file')
 
 if __name__ == '__main__':
+    log = logging.getLogger(os.path.basename(__file__))
+    log.info('Exetute')
     main(sys.argv)
