@@ -1,6 +1,5 @@
 # tableformat.py
-#
-# Exercise 4.5
+
 class TableFormatter:
     def headings(self, headers):
         '''

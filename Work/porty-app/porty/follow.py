@@ -1,7 +1,8 @@
 # follow.py
+
 import os
 import time
-import report
+from . import report
 
 def follow(filename):
     f = open(filename)

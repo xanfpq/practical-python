@@ -1,9 +1,10 @@
 # ticker.py
-from follow import follow
+
 import csv
-import report
-import tableformat
 import sys
+from .follow import follow
+from . import report
+from . import tableformat
 
 def select_columns(rows, indices):
     for row in rows:

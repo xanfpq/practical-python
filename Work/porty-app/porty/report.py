@@ -2,12 +2,11 @@
 #
 # Exercise 2.4
 import sys
-from stock import Stock
-from fileparse import parse_csv
-import tableformat
-from portfolio import Portfolio
 import logging
 import os
+from .fileparse import parse_csv
+from .portfolio import Portfolio
+from . import tableformat
 
 logging.basicConfig(
     filename = 'app.log',      # Name of the log file (omit to use stderr)
